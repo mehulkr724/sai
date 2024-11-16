@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        header {
+            background: #4CAF50;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 30px;
+            background: #3e8e41;
+            transition: background 0.3s, transform 0.3s;
+        }
+        nav a:hover {
+            background: #367837;
+            transform: translateY(-2px);
+        }
+        section {
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard, .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .card, .grid-item {
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            flex: 1 1 calc(30% - 2rem);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover, .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .meal-list {
+            margin-top: 1rem;
+            list-style: none;
+            padding-left: 0;
+        }
+        .meal-list li {
+            background: #f9f9f9;
+            padding: 0.5rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .meal-section {
+            margin-bottom: 1.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .editable {
+            cursor: pointer;
+            background-color: #f0f8ff;
+        }
+        .editable:hover {
+            background-color: #e0f0ff;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: #333;
+            color: white;
+            margin-top: 2rem;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: calc(100% - 22px);
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+        }
+        button {
+            padding: 0.7rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        #backToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+        #backToTop:hover {
+            background-color: #367837;
+        }
+        #studentCount {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mess Management System</h1>
+        <nav>
+            <a href="#menu-planning">Menu Planning</a>
+            <a href="#inventory-management">Inventory Management</a>
+            <a href="#meal-tracking">Meal Tracking</a>
+            <a href="#cost-management">Cost Management</a>
+            <a href="#challenges">Challenges</a>
+            <a href="#solutions">Solutions</a>
+            <a href="#feedback">Feedback Portal</a>
+        </nav>
+    </header>
+
+    <section id="menu-planning">
+        <h2>Menu Planning and Scheduling</h2>
+        <div class="meal-section">
+            <h3>Breakfast</h3>
+            <input type="text" id="breakfastInput" placeholder="Enter breakfast meal">
+            <button onclick="addMeal('breakfast')">Add Meal</button>
+            <ul id="breakfastList" class="meal-list"></ul>
+        </div>
+        <div class="meal-section">
+            <h3>Lunch</h3>
+            <input type="text" id="lunchInput" placeholder="Enter lunch meal">
+            <button onclick="addMeal('lunch')">Add Meal</button>
+            <ul id="lunchList" class="meal-list"></ul>
+        </div>
+        <div class="meal-section">
+            <h3>Dinner</h3>
+            <input type="text" id="dinnerInput" placeholder="Enter dinner meal">
+            <button onclick="addMeal('dinner')">Add Meal</button>
+            <ul id="dinnerList" class="meal-list"></ul>
+        </div>
+    </section>
+
+    <section id="inventory-management">
+        <h2>Inventory Management</h2>
+        <p>Current Inventory (in KG):</p>
+        <div id="inventoryDashboard" class="dashboard"></div>
+
+        <h3>Add or Update Inventory</h3>
+        <input type="text" id="itemName" placeholder="Item Name">
+        <input type="number" id="itemStock" placeholder="Stock Level (in KG)">
+        <button onclick="addOrUpdateInventory()">Add/Update Item</button>
+    </section>
+
+    <section id="meal-tracking">
+        <h2>Meal Tracking and Attendance</h2>
+        <p>Click on "P" or "A" to change attendance status. Total number of "P" (present) days will be calculated automatically.</p>
+        <div id="studentCount">Total Students Enrolled: <span id="totalStudents">2</span></div>
+        <button onclick="addStudent()">Add New Student</button>
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Date 1</th>
+                    <th>Date 2</th>
+                    <th>Date 3</th>
+                    <th>Date 4</th>
+                    <th>Date 5</th>
+                    <th>Date 6</th>
+                    <th>Date 7</th>
+                    <th>Total P</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceBody">
+                <tr>
+                    <td contenteditable="true">Student A</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">A</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">A</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">A</td>
+                    <td class="total">0</td>
+                    <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">Student B</td>
+                    <td class="editable" onclick="toggleAttendance(this)">A</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">A</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">P</td>
+                    <td class="editable" onclick="toggleAttendance(this)">A</td>
+                    <td class="total">0</td>
+                    <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Cost Management and Budgeting -->
+    <section id="cost-management">
+        <h2>Cost Management and Budgeting</h2>
+        <label for="totalBudget">Total Budget (₹):</label>
+        <input type="number" id="totalBudget" value="50000" oninput="updateBudget()">
+        <h3>Add Expense</h3>
+        <label for="expenseCategory">Category:</label>
+        <select id="expenseCategory">
+            <option value="Food Supplies">Food Supplies</option>
+            <option value="Labor Costs">Labor Costs</option>
+            <option value="Kitchen Equipment">Kitchen Equipment</option>
+            <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+        <label for="expenseAmount">Amount (₹):</label>
+        <input type="number" id="expenseAmount" placeholder="Enter expense amount">
+        <button onclick="addExpense()">Add Expense</button>
+        <h3>Expense Report</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount (₹)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="expenseTable"></tbody>
+        </table>
+        <p>Total Expenses: ₹<span id="totalExpenses">0</span></p>
+        <p>Remaining Budget: ₹<span id="remainingBudget">50000</span></p>
+    </section>
+
+    <section id="challenges">
+        <h2>Challenges Faced</h2>
+        <ul>
+            <li>Managing perishable stock</li>
+            <li>Fluctuating attendance</li>
+            <li>Cost control and budgeting</li>
+            <li>Peak-hour demand</li>
+        </ul>
+    </section>
+
+    <section id="solutions">
+        <h2>Solutions and Benefits</h2>
+        <div class="grid">
+            <div class="grid-item">Automated tracking</div>
+            <div class="grid-item">Real-time attendance</div>
+            <div class="grid-item">Budget tools</div>
+        </div>
+    </section>
+
+    <section id="feedback-portal">
+        <h2>User Feedback Portal</h2>
+        <form onsubmit="submitFeedback(event)">
+            <label for="feedbackCategory">Feedback Category:</label>
+            <select id="feedbackCategory">
+                <option value="Food Quality">Food Quality</option>
+                <option value="Portion Size">Portion Size</option>
+                <option value="Service Speed">Service Speed</option>
+                <option value="Cleanliness">Cleanliness</option>
+                <option value="Other">Other</option>
+            </select>
+            <label for="feedback">Your Feedback:</label>
+            <textarea id="feedback" rows="4"></textarea>
+            <label>
+                <input type="checkbox" id="anonymous"> Submit as anonymous
+            </label>
+            <button type="submit">Submit Feedback</button>
+        </form>
+        <h3>Feedback Entries</h3>
+        <div id="feedbackList"></div>
+    </section>
+
+
+    <footer>
+        <p>© 2024 Mess Management System Presentation</p>
+    </footer>
+
+    <button id="backToTop" onclick="scrollToTop()">Back to Top</button>
+
+    <script>
+        // Menu Planning
+        function addMeal(mealType) {
+            const mealInput = document.getElementById(`${mealType}Input`).value;
+            if (mealInput) {
+                const listItem = document.createElement('li');
+                listItem.textContent = mealInput;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-btn';
+                deleteButton.onclick = function() {
+                    listItem.remove();
+                };
+                listItem.appendChild(deleteButton);
+                document.getElementById(`${mealType}List`).appendChild(listItem);
+                document.getElementById(`${mealType}Input`).value = '';
+            }
+        }
+
+        // Initial inventory items
+        const inventoryItems = [
+            { name: 'Rice', stock: '50 KG' },
+            { name: 'Vegetables', stock: '30 KG' },
+            { name: 'Milk', stock: '20 KG' }
+        ];
+
+        // Function to display inventory items
+        function displayInventory() {
+            const inventoryDashboard = document.getElementById('inventoryDashboard');
+            inventoryDashboard.innerHTML = ''; // Clear current inventory
+
+            inventoryItems.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = `${item.name}: Stock ${item.stock}`;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-btn';
+                deleteButton.onclick = function() {
+                    inventoryItems.splice(index, 1);
+                    displayInventory();
+                };
+                card.appendChild(deleteButton);
+                inventoryDashboard.appendChild(card);
+            });
+        }
+
+        // Function to add or update an inventory item
+        function addOrUpdateInventory() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemStock = document.getElementById('itemStock').value.trim() + ' KG';
+
+            if (itemName && itemStock) {
+                const existingItem = inventoryItems.find(item => item.name.toLowerCase() === itemName.toLowerCase());
+
+                if (existingItem) {
+                    // Update existing item
+                    existingItem.stock = itemStock;
+                } else {
+                    // Add new item
+                    inventoryItems.push({ name: itemName, stock: itemStock });
+                }
+
+                // Clear input fields
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemStock').value = '';
+
+                // Refresh the inventory display
+                displayInventory();
+            } else {
+                alert('Please enter both item name and stock level.');
+            }
+        }
+
+        // Initial display of inventory items
+        displayInventory();
+
+        // Attendance tracking
+        function toggleAttendance(cell) {
+            cell.textContent = cell.textContent === 'P' ? 'A' : 'P';
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const rows = document.querySelectorAll('#attendanceBody tr');
+            rows.forEach(row => {
+                let totalP = 0;
+                const cells = row.querySelectorAll('.editable');
+                cells.forEach(cell => {
+                    if (cell.textContent === 'P') {
+                        totalP++;
+                    }
+                });
+                row.querySelector('.total').textContent = totalP;
+            });
+        }
+
+        // Initial calculation of totals
+        updateTotals();
+
+        // Add a new student row in the attendance table
+        function addStudent() {
+            const tableBody = document.getElementById('attendanceBody');
+            const newRow = document.createElement('tr');
+            const studentCount = tableBody.rows.length + 1;
+
+            newRow.innerHTML = `
+                <td contenteditable="true">Student ${studentCount}</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="editable" onclick="toggleAttendance(this)">A</td>
+                <td class="total">0</td>
+                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+            `;
+
+            tableBody.appendChild(newRow);
+            document.getElementById('totalStudents').textContent = studentCount;
+            updateTotals();
+        }
+
+        // Delete a row in the attendance table
+        function deleteRow(button) {
+            const row = button.parentElement.parentElement;
+            row.remove();
+            const tableBody = document.getElementById('attendanceBody');
+            document.getElementById('totalStudents').textContent = tableBody.rows.length;
+        }
+
+        // Cost Management
+        // Cost Management Functions
+        let totalBudget = 50000;
+        let totalExpenses = 0;
+        const expenses = [];
+
+        function updateBudget() {
+            totalBudget = parseFloat(document.getElementById('totalBudget').value) || 0;
+            calculateRemainingBudget();
+        }
+
+        function addExpense() {
+            const category = document.getElementById('expenseCategory').value;
+            const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+
+            if (amount > 0) {
+                expenses.push({ category, amount });
+                totalExpenses += amount;
+                updateExpenseTable();
+                document.getElementById('expenseAmount').value = '';
+            } else {
+                alert('Please enter a valid expense amount.');
+            }
+        }
+
+        function updateExpenseTable() {
+            const tableBody = document.getElementById('expenseTable');
+            tableBody.innerHTML = '';
+            expenses.forEach((expense, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${expense.category}</td>
+                    <td>₹${expense.amount}</td>
+                    <td><button onclick="removeExpense(${index})">Delete</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+            document.getElementById('totalExpenses').textContent = totalExpenses;
+            calculateRemainingBudget();
+        }
+
+        function removeExpense(index) {
+            totalExpenses -= expenses[index].amount;
+            expenses.splice(index, 1);
+            updateExpenseTable();
+        }
+
+        function calculateRemainingBudget() {
+            const remaining = totalBudget - totalExpenses;
+            document.getElementById('remainingBudget').textContent = remaining;
+        }
+
+
+        // User Feedback Portal Functions
+        const feedbackEntries = [];
+
+        function submitFeedback(event) {
+            event.preventDefault();
+            const category = document.getElementById('feedbackCategory').value;
+            const feedbackText = document.getElementById('feedback').value.trim();
+            const isAnonymous = document.getElementById('anonymous').checked;
+            const feedbackAuthor = isAnonymous ? 'Anonymous' : 'User';
+
+            if (feedbackText) {
+                const feedbackEntry = {
+                    category,
+                    feedbackText,
+                    author: feedbackAuthor,
+                    date: new Date().toLocaleString()
+                };
+
+                feedbackEntries.push(feedbackEntry);
+                displayFeedbackEntries();
+                document.getElementById('feedback').value = '';
+                document.getElementById('anonymous').checked = false;
+            } else {
+                alert('Please enter your feedback before submitting.');
+            }
+        }
+
+        function displayFeedbackEntries() {
+            const feedbackList = document.getElementById('feedbackList');
+            feedbackList.innerHTML = '';
+            feedbackEntries.forEach((entry, index) => {
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'feedback-entry';
+                feedbackDiv.innerHTML = `
+                    <strong>Category:</strong> ${entry.category}<br>
+                    <strong>Feedback:</strong> ${entry.feedbackText}<br>
+                    <strong>Author:</strong> ${entry.author}<br>
+                    <strong>Date:</strong> ${entry.date}<br>
+                    <button class="delete-btn" onclick="deleteFeedback(${index})">Delete</button>
+                `;
+                feedbackList.appendChild(feedbackDiv);
+            });
+        }
+
+        function deleteFeedback(index) {
+            feedbackEntries.splice(index, 1);
+            displayFeedbackEntries();
+        }
+
+        // Back to Top Button
+        window.onscroll = function() {
+            const backToTop = document.getElementById('backToTop');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTop.style.display = "block";
+            } else {
+                backToTop.style.display = "none";
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
